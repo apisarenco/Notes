@@ -160,3 +160,4 @@ $$ LANGUAGE plpgsql;
 * `ANALYZE`, adding indexes, constraints and others, can only be done on the partitions. They have no effect, or cannot even be added (constraitns) on base tables.
 * Declarative partitioning cannot route records to FOREIGN tables (CStore), and underlying checks don't work.
   * But the planner does take the partitions into account so it actually can make things faster even with cstore.
+* The number of partitions is limited by the OS. Queries that require reading too many partitions will [throw SQL Error](https://doxygen.postgresql.org/fd_8c.html#a1b83596398165190a393307951b8d70d) `53000` (INSUFFICIENT_RESOURCES), with the message `exceeded maxAllocatedDescs (%d) while trying to open file "%s"`.
