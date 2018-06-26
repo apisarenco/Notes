@@ -1,6 +1,6 @@
 import time, psycopg2, sys
 
-conn = psycopg2.connect('dbname=dwh_etl_dev')
+conn = psycopg2.connect('dbname=test')
 cur = conn.cursor()
 
 def recreate_schema():
