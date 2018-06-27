@@ -75,10 +75,10 @@ SELECT
     to_char(d, 'YYYYMMDD')::INTEGER,
     n1,
     n2,
-    md5(t1 || t2 || 't1'),
-    md5(t2 || t3 || 't2'),
-    md5(t3 || t4 || 't3'),
-    md5(t4 || t1 || 't4'),
+    md5(t1::TEXT || t2::TEXT || 't1::TEXT'),
+    md5(t2::TEXT || t3::TEXT || 't2::TEXT'),
+    md5(t3::TEXT || t4::TEXT || 't3::TEXT'),
+    md5(t4::TEXT || t1::TEXT || 't4::TEXT'),
     c::SMALLINT
 FROM generate_series(CURRENT_DATE - INTERVAL '500 days', CURRENT_DATE, INTERVAL '1 day') d
 CROSS JOIN generate_series(1, 10, 1) n1
