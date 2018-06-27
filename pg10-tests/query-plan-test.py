@@ -8,7 +8,7 @@
 # * Partition big table and day dimension by month (and chunk for big table)
 # Always create foreign keys. Add check constraints to try speed things up
 
-# Check query plans and execution time for N(big table)=1000M with 500 distinct days (2M per day), N(day)=3000
+# Check query plans and execution time for N(big table)=100M with 500 distinct days (2M per day), N(day)=3000
 
 import time, psycopg2, sys
 
@@ -61,7 +61,6 @@ cur.execute('''CREATE TABLE pg10test.events (
     t1 TEXT,
     t2 TEXT,
     t3 TEXT,
-    t4 TEXT,
     chunk_id SMALLINT,
     FOREIGN KEY (day_fk) REFERENCES pg10test.days (day_id),
     FOREIGN KEY (next1_fk) REFERENCES pg10test.next1 (id),
@@ -69,7 +68,7 @@ cur.execute('''CREATE TABLE pg10test.events (
 );
 
 INSERT INTO pg10test.events (
-    day_fk, next1_fk, next2_fk, t1, t2, t3, t4, chunk_id
+    day_fk, next1_fk, next2_fk, t1, t2, t3, chunk_id
 )
 SELECT
     to_char(d, 'YYYYMMDD')::INTEGER,
@@ -77,8 +76,7 @@ SELECT
     n2,
     md5(t1::TEXT || t2::TEXT || 't1::TEXT'),
     md5(t2::TEXT || t3::TEXT || 't2::TEXT'),
-    md5(t3::TEXT || t4::TEXT || 't3::TEXT'),
-    md5(t4::TEXT || t1::TEXT || 't4::TEXT'),
+    md5(t3::TEXT || t1::TEXT || 't3::TEXT'),
     c::SMALLINT
 FROM generate_series(CURRENT_DATE - INTERVAL '500 days', CURRENT_DATE, INTERVAL '1 day') d
 CROSS JOIN generate_series(1, 10, 1) n1
@@ -86,7 +84,6 @@ CROSS JOIN generate_series(1, 10, 1) n2
 CROSS JOIN generate_series(1, 10, 1) t1
 CROSS JOIN generate_series(1, 10, 1) t2
 CROSS JOIN generate_series(1, 10, 1) t3
-CROSS JOIN generate_series(1, 10, 1) t4
 CROSS JOIN generate_series(1, 2, 1) c
 ''')
 
